@@ -1,0 +1,14 @@
+com/idcard/artists/apiservice/service/TokenService.class
+com/idcard/artists/apiservice/data/dto/StudentDto.class
+com/idcard/artists/apiservice/data/dto/FacultyDto.class
+com/idcard/artists/apiservice/controller/InvalidTokenException.class
+com/idcard/artists/apiservice/controller/LoginController.class
+com/idcard/artists/apiservice/ApiserviceApplication.class
+com/idcard/artists/apiservice/config/SecurityConfig.class
+com/idcard/artists/apiservice/data/dto/LoginDto$LoginDtoBuilder.class
+com/idcard/artists/apiservice/data/dto/StudentDto$StudentDtoBuilder.class
+com/idcard/artists/apiservice/data/dto/LoginDto.class
+com/idcard/artists/apiservice/service/LoginService.class
+com/idcard/artists/apiservice/controller/DataController.class
+com/idcard/artists/apiservice/service/StudentService.class
+com/idcard/artists/apiservice/data/dto/FacultyDto$FacultyDtoBuilder.class
