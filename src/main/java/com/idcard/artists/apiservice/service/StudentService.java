@@ -20,15 +20,17 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class StudentService {
   public StudentDto saveStudent(StudentDto student, MultipartFile file) throws IOException {
-
+    String fileName = student.getStudentSchoolId() +
+            "-" +
+            student.getStudentAdmissionNumber() +
+            "-" +
+            String.valueOf(System.currentTimeMillis());
     Storage storage = StorageOptions.newBuilder().setProjectId("idcard-artis").build().getService();
-    BlobId blobId = BlobId.of("idcard-artist-bucket-1",
-            student.getStudentAdmissionNumber()+"-"+String.valueOf(System.currentTimeMillis()));
+    BlobId blobId = BlobId.of("idcard-artist-bucket-1", fileName);
     BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
 
     Storage.BlobTargetOption precondition;
-    if (storage.get("idcard-artist-bucket-1",
-            student.getStudentAdmissionNumber()+"-"+String.valueOf(System.currentTimeMillis())) == null) {
+    if (storage.get("idcard-artist-bucket-1", fileName) == null) {
       // For a target object that does not yet exist, set the DoesNotExist precondition.
       // This will cause the request to fail if the object is created before the request runs.
       precondition = Storage.BlobTargetOption.doesNotExist();
@@ -39,9 +41,7 @@ public class StudentService {
       precondition =
               Storage.BlobTargetOption.generationMatch(
                       storage.get("idcard-artist-bucket-1",
-                              student.getStudentAdmissionNumber()+"-"+String.valueOf(System.currentTimeMillis())).getGeneration());
-      //precondition = Storage.BlobTargetOption.generationNotMatch();
-
+                              fileName).getGeneration());
     }
 
     storage.create(blobInfo,
@@ -57,13 +57,14 @@ public class StudentService {
 
     Datastore datastore = datastoreOptions.getService();
 
-    String kind = "student";
+    String kind = "student-details";
     String id = UUID.randomUUID().toString();
 
     Key taskKey = datastore.newKeyFactory().setKind(kind).newKey(id);
     Entity task = Entity.newBuilder(taskKey)
             .set("student_name", student.getStudentName())
             .set("school_name", student.getStudentSchoolName())
+            .set("school_id", student.getStudentSchoolId())
             .set("guardian_name", student.getStudentGuardianName())
             .set("contact_number", student.getStudentContactNumber())
             .set("date_of_birth", student.getStudentDateOfBirth())
@@ -80,6 +81,7 @@ public class StudentService {
     return StudentDto.builder()
             .studentName(retrieved.getString("student_name"))
             .studentSchoolName(retrieved.getString("school_name"))
+            .studentSchoolId(retrieved.getString("school_id"))
             .studentGuardianName(retrieved.getString("guardian_name"))
             .studentContactNumber(retrieved.getString("contact_number"))
             .studentDateOfBirth(retrieved.getString("date_of_birth"))
